@@ -65,14 +65,6 @@ def print_results(df_clean):
         print("Unfortunately, your strategy underperformed Buy and Hold.")
 
 
-
-
-
-
-
-
-
-
 if __name__ == "__main__":
     TICKER = "AAPL"
     START_DATE = "2019-01-01"
