@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import yfinance as yf
-
+import matplotlib.pyplot as plt
 
 #Dowload historical data from yfinance
 
@@ -65,6 +65,36 @@ def print_results(df_clean):
         print("Unfortunately, your strategy underperformed Buy and Hold.")
 
 
+
+def plot_results(df_clean, ticker):
+    print("Generating plot")
+    plt.figure(figsize=(14,7))
+
+    #plot1 buy and hold
+    plt.plot(df_clean.index, df_clean["buy_hold_total"], label="Buy and Hold", color="grey", alpha=0.5)
+
+    #plot2 strategy
+    plt.plot(df_clean.index, df_clean["strategy_total"], label="Strategy", color="blue",linewidth=2)    
+
+    #buy signals
+    buys=df_clean[df_clean["position"]==1]
+    plt.scatter(buys.index, df_clean.loc[buys.index,"strategy_total"], marker="^", color="green", label="Buy Signal", s=100,zorder=5)
+
+    #sell signals
+    sells=df_clean[df_clean["position"]==-1]
+    plt.scatter(sells.index, df_clean.loc[sells.index,"strategy_total"], marker="v", color="red", label="Sell Signal", s=100,zorder=5)
+
+    plt.title(f'Backtest Result: {ticker} (Golden Cross Strategy)', fontsize=16)
+    plt.ylabel('Equity Multiplier (Start = 1.0)', fontsize=12)
+    plt.xlabel('Date', fontsize=12)
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    
+    # Show the graph
+    plt.show()
+
+
+
 if __name__ == "__main__":
     TICKER = "AAPL"
     START_DATE = "2019-01-01"
@@ -74,3 +104,4 @@ if __name__ == "__main__":
     data_with_signals=add_strategy_signals(data)
     final_data=run_backtest(data_with_signals, COMMISSION_FEE)
     print_results(final_data)
+    plot_results(final_data, TICKER)
